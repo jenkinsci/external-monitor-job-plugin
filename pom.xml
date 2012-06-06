@@ -7,7 +7,7 @@
   </parent>
 
   <artifactId>external-monitor-job</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>External Monitor Job Type Plugin</name>
   <description>Adds the ability to monitor the result of externally executed jobs</description>
