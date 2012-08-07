@@ -79,6 +79,10 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
         });
     }
 
+    private void setCharset(String c) { // JENKINS-14107
+        charset = c;
+    }
+
     /**
      * Instead of performing a build, accept the log and the return code
      * from a remote machine.
@@ -118,7 +122,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 p.nextTag();    // get to the <run>
                 p.nextTag();    // get to the <log>
 
-                charset=p.getAttributeValue(null,"content-encoding");
+                setCharset(p.getAttributeValue(null,"content-encoding"));
                 while(p.next()!= END_ELEMENT) {
                     int type = p.getEventType();
                     if(type== CHARACTERS || type== CDATA)
