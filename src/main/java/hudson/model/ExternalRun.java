@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.util.Scanner;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
@@ -83,6 +84,18 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
         charset = c;
     }
 
+    private Result parseResult(String text) {
+        Result result;
+        Scanner sc = new Scanner(text);
+        if (sc.hasNextInt()) {	
+            result = sc.nextInt()==0 ? Result.SUCCESS : Result.FAILURE;
+        }
+        else {
+            result = Result.fromString(text);
+        }
+        return result;
+    }
+
     /**
      * Instead of performing a build, accept the log and the return code
      * from a remote machine.
@@ -128,11 +141,9 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                     if(type== CHARACTERS || type== CDATA)
                         logger.print(p.getText());
                 }
+
                 p.nextTag(); // get to <result>
-
-
-
-                Result r = Integer.parseInt(elementText(p))==0?Result.SUCCESS:Result.FAILURE;
+                Result r = parseResult(elementText(p));
 
                 do {
                     p.nextTag();
