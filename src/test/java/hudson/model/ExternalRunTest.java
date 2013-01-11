@@ -54,6 +54,6 @@ public class ExternalRunTest extends HudsonTestCase {
         Jenkins.getInstance().setNumExecutors(0);
         // force update of nodes:
         Jenkins.getInstance().setNodes(Jenkins.getInstance().getNodes());
-        Assert.assertNull(Jenkins.getInstance().toComputer());
+        Assert.assertNull(Jenkins.getInstance().toComputer()); // XXX this seems to fail randomly
     }
 }
