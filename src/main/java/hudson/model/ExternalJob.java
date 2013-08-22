@@ -82,6 +82,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
         lastBuildStartTime = System.currentTimeMillis();
 
         ExternalRun run = new ExternalRun(this);
+        _getRuns();
         runs.put(run);
         return run;
     }
