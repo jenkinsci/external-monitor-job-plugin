@@ -34,6 +34,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Job that runs outside Hudson whose result is submitted to Hudson
@@ -43,6 +45,9 @@ import java.io.IOException;
  * @author Kohsuke Kawaguchi
  */
 public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements TopLevelItem {
+
+    private static final Logger LOGGER = Logger.getLogger(ExternalJob.class.getName());
+
     public ExternalJob(String name) {
         this(Jenkins.getInstance(),name);
     }
@@ -60,6 +65,12 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
         });
     }
 
+    // TODO JENKINS-19377 overriding until 1.531 when this is fixed in core
+    @Override public void removeRun(ExternalRun run) {
+        if (runs != null && !runs.remove(run)) {
+            LOGGER.log(Level.WARNING, "{0} did not contain {1} to begin with", new Object[] {this, run});
+        }
+    }
 
     // keep track of the previous time we started a build
     private transient long lastBuildStartTime;
