@@ -170,9 +170,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
         }
     }
 
-    @SuppressWarnings({"Since15"})
-    @IgnoreJRERequirement
-        public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
+    public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(listener.getLogger());
@@ -199,9 +197,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
         save();
     }
 
-    @SuppressWarnings({"Since15"})
-    @IgnoreJRERequirement
-        public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
+    public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(listener.getLogger());
