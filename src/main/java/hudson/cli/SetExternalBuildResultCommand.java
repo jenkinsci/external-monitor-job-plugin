@@ -1,18 +1,12 @@
 package hudson.cli;
 
-import jenkins.model.Jenkins;
 import hudson.Extension;
 import hudson.model.ExternalJob;
 import hudson.model.ExternalRun;
 import hudson.model.Run;
-import hudson.model.Item;
-import hudson.remoting.Callable;
-import org.apache.commons.io.IOUtils;
+import hudson.model.TopLevelItem;
 import org.kohsuke.args4j.Option;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.InputStream;
 
 /**
  * Set build result for external monitor job.
@@ -20,7 +14,7 @@ import java.io.InputStream;
  * @author David Ostrovsky
  */
 @Extension
-public class SetExternalBuildResultCommand extends CLICommand implements Serializable {
+public class SetExternalBuildResultCommand extends CLICommand {
 
     @Override
     public String getShortDescription() {
@@ -28,13 +22,13 @@ public class SetExternalBuildResultCommand extends CLICommand implements Seriali
     }
 
     @Option(name="--job", aliases={"-j"}, metaVar="JOB", usage="Name of the external monitor job", required=true)
-    public transient ExternalJob job;
+    public transient TopLevelItem job;
 
-    @Option(name="--display", aliases={"-n"}, metaVar="DISPLAY", usage="Display name of the job", required=false)
+    @Option(name="--display", aliases={"-n"}, metaVar="DISPLAY", usage="Display name of the build", required=false)
     public transient String displayName;
 
-    @Option(name="--result", aliases={"-r"}, metaVar="RESULT", usage="0: success, 1: fail", required=true)
-    public transient int result;
+    @Option(name="--result", aliases={"-r"}, metaVar="RESULT", usage="0: success, 1: fail", required=false)
+    public transient int result = 0;
 
     @Option(name="--duration", aliases={"-d"}, metaVar="DURATION", usage="Number of milli-seconds it took to run this build", required=false)
     public transient long duration = 0;
@@ -42,7 +36,7 @@ public class SetExternalBuildResultCommand extends CLICommand implements Seriali
     @Option(name="--log", aliases={"-l"}, metaVar="-|LOG", usage="Log to be set. '-' to read from stdin (gzipped).", required=true)
     public String log;
 
-    @Option(name="--dump-build-number", aliases={"-b"}, metaVar="BUILD", usage="Log the produced build number to the standard output", required=false)
+    @Option(name="--dump-build-number", aliases={"-b"}, usage="Log the produced build number to the standard output", required=false)
     public boolean dumpBuildNumber;
 
     /**
@@ -59,7 +53,7 @@ public class SetExternalBuildResultCommand extends CLICommand implements Seriali
      *      0: success.
      */
     protected int run() throws Exception {
-        ExternalRun run = job.newBuild();
+        ExternalRun run = ((ExternalJob) job).newBuild();
         run.checkPermission(Run.UPDATE);
 
         if ("-".equals(log)) {
@@ -73,7 +67,7 @@ public class SetExternalBuildResultCommand extends CLICommand implements Seriali
         }
 
         if (dumpBuildNumber) {
-            System.out.format("%d\n", run.getNumber());
+            stdout.println(run.getNumber());
         }
 
         return 0;
