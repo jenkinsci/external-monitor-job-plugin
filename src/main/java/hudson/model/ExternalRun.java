@@ -34,7 +34,9 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.InputStream;
 import java.io.Reader;
+import java.util.zip.GZIPInputStream;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
@@ -166,6 +168,55 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
             // save the updated duration
             save();
         }
+    }
+
+    public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
+        execute(new RunExecution() {
+            public Result run(BuildListener listener) throws Exception {
+                PrintStream logger = new PrintStream(listener.getLogger());
+                final int sChunk = 8192;
+                GZIPInputStream zipin = new GZIPInputStream(stream);
+                byte[] buffer = new byte[sChunk];
+                int length;
+                while ((length = zipin.read(buffer, 0, sChunk)) != -1)
+                    logger.write(buffer, 0, length);
+                Result r = result==0?Result.SUCCESS:Result.FAILURE;
+                return r;
+            }
+
+            public void post(BuildListener listener) {
+                // do nothing
+            }
+
+            public void cleanUp(BuildListener listener) {
+                // do nothing
+            }
+        });
+
+        super.duration = duration;
+        save();
+    }
+
+    public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
+        execute(new RunExecution() {
+            public Result run(BuildListener listener) throws Exception {
+                PrintStream logger = new PrintStream(listener.getLogger());
+                logger.print(log);
+                Result r = result==0?Result.SUCCESS:Result.FAILURE;
+                return r;
+            }
+
+            public void post(BuildListener listener) {
+                // do nothing
+            }
+
+            public void cleanUp(BuildListener listener) {
+                // do nothing
+            }
+        });
+
+        super.duration = duration;
+        save();
     }
 
 }
