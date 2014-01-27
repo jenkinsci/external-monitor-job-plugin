@@ -70,6 +70,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
      * Needs to be synchronized so that two {@link #newBuild()} invocations serialize each other.
      */
     public synchronized ExternalRun newBuild() throws IOException {
+        checkPermission(AbstractProject.BUILD);
         // make sure we don't start two builds in the same second
         // so the build directories will be different too
         long timeSinceLast = System.currentTimeMillis() - lastBuildStartTime;
@@ -91,6 +92,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
      * Used to check if this is an external job and ready to accept a build result.
      */
     public void doAcceptBuildResult(StaplerResponse rsp) throws IOException, ServletException {
+        checkPermission(AbstractProject.BUILD);
         rsp.setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -98,7 +100,6 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
      * Used to post the build result from a remote machine.
      */
     public void doPostBuildResult( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
-        checkPermission(AbstractProject.BUILD);
         ExternalRun run = newBuild();
         run.acceptRemoteSubmission(req.getReader());
         rsp.setStatus(HttpServletResponse.SC_OK);
