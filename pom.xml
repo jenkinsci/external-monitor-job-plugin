@@ -7,7 +7,7 @@
   </parent>
 
   <artifactId>external-monitor-job</artifactId>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.3</version>
   <packaging>hpi</packaging>
   <name>External Monitor Job Type Plugin</name>
   <description>Adds the ability to monitor the result of externally executed jobs</description>
@@ -17,6 +17,7 @@
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+    <tag>external-monitor-job-1.3</tag>
   </scm>
 
   <repositories>
