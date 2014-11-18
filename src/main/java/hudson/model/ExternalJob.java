@@ -23,17 +23,17 @@
  */
 package hudson.model;
 
-import hudson.model.RunMap.Constructor;
 import hudson.Extension;
+import hudson.model.RunMap.Constructor;
 import hudson.util.AlternativeUiTextProvider;
-import jenkins.model.Jenkins;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.externalmonitorjob.Messages;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Job that runs outside Hudson whose result is submitted to Hudson
@@ -114,12 +114,12 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
 
     @Override
     public String getPronoun() {
-        return AlternativeUiTextProvider.get(PRONOUN, this, Messages.ExternalJob_Pronoun());
+        return AlternativeUiTextProvider.get(PRONOUN, this, Messages.ExternalJob_displayName());
     }
 
     public static final class DescriptorImpl extends TopLevelItemDescriptor {
         public String getDisplayName() {
-            return Messages.ExternalJob_DisplayName();
+            return Messages.ExternalJob_displayName();
         }
 
         public ExternalJob newInstance(ItemGroup parent, String name) {
