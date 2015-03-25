@@ -52,7 +52,7 @@ public class ExternalRunTest extends HudsonTestCase {
 
     private void whenJenkinsMasterHasNoExecutors() throws IOException {
         Jenkins.getInstance().setNumExecutors(0);
-        // force update of nodes:
+        // force update of nodes (TODO https://github.com/jenkinsci/jenkins/pull/1596 renders this workaround unnecessary):
         Jenkins.getInstance().setNodes(Jenkins.getInstance().getNodes());
         // does not reliably work: Assert.assertNull(Jenkins.getInstance().toComputer());
     }
