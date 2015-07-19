@@ -116,7 +116,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
             }
 
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()));
+                PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()), false, "UTF-8");
 
                 XMLInputFactory xif = XMLInputFactory.newInstance();
                 XMLStreamReader p = xif.createXMLStreamReader(in);
@@ -173,7 +173,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
     public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(listener.getLogger());
+                PrintStream logger = new PrintStream(listener.getLogger(), false, "UTF-8");
                 final int sChunk = 8192;
                 GZIPInputStream zipin = new GZIPInputStream(stream);
                 byte[] buffer = new byte[sChunk];
@@ -200,9 +200,8 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
     public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(listener.getLogger());
-                logger.print(log);
-                Result r = result==0?Result.SUCCESS:Result.FAILURE;
+                listener.getLogger().print(log);
+                Result r = result==0 ? Result.SUCCESS : Result.FAILURE;
                 return r;
             }
 

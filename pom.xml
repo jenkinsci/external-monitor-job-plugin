@@ -14,6 +14,12 @@
 
   <url>https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs</url>
 
+  <properties> 
+    <findbugs-maven-plugin.version>3.0.1</findbugs-maven-plugin.version>
+    <!--TODO: change to true after the code cleanup-->
+    <findbugs-maven-plugin.failOnError>false</findbugs-maven-plugin.failOnError>
+  </properties>
+
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
@@ -34,11 +40,11 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>${findbugs-maven-plugin.version}</version>
         <configuration>
           <xmlOutput>true</xmlOutput>
           <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-          <failOnError>false</failOnError>
+          <failOnError>${findbugs-maven-plugin.failOnError}</failOnError>
         </configuration>
         <executions>
           <execution>
