@@ -152,7 +152,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
          * @return A string it represents a URL pattern to get the Item icon in different sizes.
          */
         public String getIconFilePathPattern() {
-            return (Jenkins.RESOURCE_PATH + "/plugin/external-monitor-job/images/:size/externaljob.png").replaceFirst("^/", "");
+            return "plugin/external-monitor-job/images/:size/externaljob.png";
         }
 
         public ExternalJob newInstance(ItemGroup parent, String name) {
