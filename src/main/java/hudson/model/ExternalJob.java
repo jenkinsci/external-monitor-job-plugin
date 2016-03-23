@@ -122,6 +122,39 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
             return Messages.ExternalJob_displayName();
         }
 
+        /**
+         * Needed if it wants External Monitor Jobs are categorized in Jenkins 2.x.
+         *
+         * TODO: Override when the baseline is upgraded to 2.x
+         *
+         * @return A string it represents a ItemCategory identifier.
+         */
+        public String getCategoryId() {
+            return "standaloneprojects";
+        }
+
+        /**
+         * Needed if it wants External Monitor Jobs are categorized in Jenkins 2.x.
+         *
+         * TODO: Override when the baseline is upgraded to 2.x
+         *
+         * @return A string with the Item description.
+         */
+        public String getDescription() {
+            return Messages.ExternalJob_Description();
+        }
+
+        /**
+         * Needed if it wants External Monitor Jobs are categorized in Jenkins 2.x.
+         *
+         * TODO: Override when the baseline is upgraded to 2.x
+         *
+         * @return A string it represents a URL pattern to get the Item icon in different sizes.
+         */
+        public String getIconFilePathPattern() {
+            return "plugin/external-monitor-job/images/:size/externaljob.png";
+        }
+
         public ExternalJob newInstance(ItemGroup parent, String name) {
             return new ExternalJob(parent,name);
         }
