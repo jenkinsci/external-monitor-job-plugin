@@ -23,6 +23,8 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core">
 <div>
-  ${it.description}
+  <j:out value="${it.description}"/>
 </div>
+</j:jelly>
