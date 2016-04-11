@@ -130,7 +130,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
          * @return A string it represents a ItemCategory identifier.
          */
         public String getCategoryId() {
-            return "standaloneprojects";
+            return "standalone-projects";
         }
 
         /**
