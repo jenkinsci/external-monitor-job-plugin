@@ -20,14 +20,29 @@ public class ExternalRunTest extends HudsonTestCase {
         b.acceptRemoteSubmission(new StringReader(
             "<run><log content-encoding='UTF-8'>AAAAAAAA</log><result>0</result><duration>100</duration></run>"
         ));
-        assertEquals(b.getResult(),Result.SUCCESS);
+        assertEquals(Result.SUCCESS,b.getResult());
         assertEquals(b.getDuration(),100);
 
         b = p.newBuild();
         b.acceptRemoteSubmission(new StringReader(
-            "<run><log content-encoding='UTF-8'>AAAAAAAA</log><result>1</result>"
+            "<run><log content-encoding='UTF-8'>AAAAAAAA</log><result>1</result></run>"
         ));
-        assertEquals(b.getResult(),Result.FAILURE);
+        assertEquals(Result.FAILURE,b.getResult());
+    }
+
+    public void testStringResult() throws Exception {
+        ExternalJob p = jenkins.createProject(ExternalJob.class, createUniqueProjectName());
+        ExternalRun b = p.newBuild();
+        b.acceptRemoteSubmission(new StringReader(
+            "<run><log/><result>SUCCESS</result></run>"
+        ));
+        assertEquals(Result.SUCCESS,b.getResult());
+
+        b = p.newBuild();
+        b.acceptRemoteSubmission(new StringReader(
+            "<run><log/><result>ABORTED</result></run>"
+        ));
+        assertEquals(Result.ABORTED,b.getResult());
     }
 
     @Bug(11592)
