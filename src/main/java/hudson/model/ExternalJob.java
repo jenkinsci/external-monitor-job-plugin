@@ -23,6 +23,7 @@
  */
 package hudson.model;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.model.RunMap.Constructor;
 import hudson.util.AlternativeUiTextProvider;
@@ -69,6 +70,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
      *
      * Needs to be synchronized so that two {@link #newBuild()} invocations serialize each other.
      */
+    @SuppressFBWarnings(value = "SWL_SLEEP_WITH_LOCK_HELD", justification = "Interrupt-driven code")
     public synchronized ExternalRun newBuild() throws IOException {
         checkPermission(AbstractProject.BUILD);
         // make sure we don't start two builds in the same second
@@ -78,6 +80,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
             try {
                 Thread.sleep(1000 - timeSinceLast);
             } catch (InterruptedException e) {
+                //Do nothing
             }
         }
         lastBuildStartTime = System.currentTimeMillis();
