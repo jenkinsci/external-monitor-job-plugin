@@ -48,6 +48,8 @@ import static javax.xml.stream.XMLStreamConstants.*;
 public class ExternalRun extends Run<ExternalJob,ExternalRun> {
     /**
      * Loads a run from a log file.
+     * @param owner
+     * @param runDir
      */
     ExternalRun(ExternalJob owner, File runDir) throws IOException {
         super(owner,runDir);
@@ -55,6 +57,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
 
     /**
      * Creates a new run.
+     * @param project
      */
     ExternalRun(ExternalJob project) throws IOException {
         super(project);
@@ -63,6 +66,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
     /**
      * Instead of performing a build, run the specified command,
      * record the log and its exit code, then call it a build.
+     * @param cmd   command to run as a build
      */
     public void run(final String[] cmd) {
         execute(new RunExecution() {
@@ -92,12 +96,15 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * <p>
      * The format of the XML is:
      *
-     * <pre><xmp>
-     * <run>
-     *  <log>...console output...</log>
-     *  <result>exit code</result>
-     * </run>
-     * </xmp></pre>
+     * <pre>&lt;xmp&gt;
+     * &lt;run&gt;
+     *  &lt;log&gt;...console output...&lt;/log&gt;
+     *  &lt;result&gt;exit code&lt;/result&gt;
+     * &lt;/run&gt;
+     * &lt;/xmp&gt;</pre>
+     *
+     * @param in    Log file referenc
+     * @throws IOException
      */
     @SuppressWarnings({"Since15"})
     @IgnoreJRERequirement
@@ -170,6 +177,12 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
         }
     }
 
+    /**
+     * @param result    Result code of the external job
+     * @param duration  Duration (in milliseconds) of the external job run
+     * @param stream    Stream of external job log
+     * @throws IOException
+     */
     public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
@@ -197,6 +210,12 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
         save();
     }
 
+    /**
+     * @param result    Result code of the external job
+     * @param duration  Duration (in milliseconds) of the external job run
+     * @param log       External job log
+     * @throws IOException
+     */
     public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
