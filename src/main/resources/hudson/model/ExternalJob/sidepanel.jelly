@@ -34,10 +34,8 @@ THE SOFTWARE.
 	  <l:tasks>
 	    <l:task icon="images/24x24/up.png" href="${rootURL}/" title="${%Back to Dashboard}" />
 	    <l:task icon="images/24x24/search.png" href="." title="${%Status}" />
-	    <l:isAdmin>
-	      <l:task icon="images/24x24/edit-delete.png" href="delete" title="${%Delete Job}" />
-	      <l:task icon="images/24x24/setting.png" href="configure" title="${%Configure}" />
-	    </l:isAdmin>
+	    <l:task icon="images/24x24/edit-delete.png" href="delete" title="${%Delete Job}" permission="${it.DELETE}" />
+	    <l:task icon="images/24x24/setting.png" href="configure" title="${%Configure}" permission="${it.CONFIGURE}"/>
 	    <st:include page="actions.jelly" />
 	  </l:tasks>
     
