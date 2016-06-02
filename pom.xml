@@ -19,6 +19,11 @@
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+  
+  <properties>
+    <jenkins.version>1.532.1</jenkins.version>
+    <java.level>6</java.level>
+  </properties>
 
   <repositories>
     <repository>
