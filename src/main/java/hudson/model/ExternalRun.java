@@ -123,7 +123,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
             }
 
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()));
+                PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()), false, "UTF-8");
 
                 XMLInputFactory xif = XMLInputFactory.newInstance();
                 XMLStreamReader p = xif.createXMLStreamReader(in);
@@ -131,15 +131,20 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 p.nextTag();    // get to the <run>
                 p.nextTag();    // get to the <log>
 
-                setCharset(p.getAttributeValue(null,"content-encoding"));
-                while(p.next()!= END_ELEMENT) {
-                    int type = p.getEventType();
-                    if(type== CHARACTERS || type== CDATA)
-                        logger.print(p.getText());
+                try {
+                    setCharset(p.getAttributeValue(null,"content-encoding"));
+                    while(p.next()!= END_ELEMENT) {
+                        int type = p.getEventType();
+                        if(type== CHARACTERS || type== CDATA)
+                            logger.print(p.getText());
+                    }
+                    p.nextTag(); // get to <result>
+                } catch (Exception ex) {
+                    logger.print("An error occurred during encoding: " + ex.getMessage());
+                    throw ex;
+                } finally {
+                    logger.close(); 
                 }
-                p.nextTag(); // get to <result>
-
-
 
                 Result r = Integer.parseInt(elementText(p))==0?Result.SUCCESS:Result.FAILURE;
 
@@ -186,13 +191,20 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
     public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(listener.getLogger());
+                PrintStream logger = new PrintStream(listener.getLogger(), false, "UTF-8");
                 final int sChunk = 8192;
                 GZIPInputStream zipin = new GZIPInputStream(stream);
                 byte[] buffer = new byte[sChunk];
                 int length;
-                while ((length = zipin.read(buffer, 0, sChunk)) != -1)
-                    logger.write(buffer, 0, length);
+                try {
+                    while ((length = zipin.read(buffer, 0, sChunk)) != -1)
+                        logger.write(buffer, 0, length);
+                } catch (Exception ex) {
+                    logger.print("An error occurred while reading the buffer: " + ex.getMessage());
+                    throw ex;
+                } finally {
+                    logger.close(); 
+                }
                 Result r = result==0?Result.SUCCESS:Result.FAILURE;
                 return r;
             }
@@ -219,8 +231,15 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
     public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(listener.getLogger());
-                logger.print(log);
+                PrintStream logger = new PrintStream(listener.getLogger(), false, "UTF-8");
+                try {
+                    logger.print(log);
+                } catch (Exception ex) {
+                    logger.print("An error occurred while accepting the remote submission: " + ex.getMessage());
+                    throw ex;
+                } finally {
+                    logger.close(); 
+                }
                 Result r = result==0?Result.SUCCESS:Result.FAILURE;
                 return r;
             }

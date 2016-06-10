@@ -78,7 +78,11 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
         long timeSinceLast = System.currentTimeMillis() - lastBuildStartTime;
         if (timeSinceLast < 1000) {
             try {
-                Thread.sleep(1000 - timeSinceLast);
+                while(timeSinceLast > 0){
+                    wait();
+                    timeSinceLast--;
+                    //Thread.sleep(1000 - timeSinceLast);
+                }
             } catch (InterruptedException e) {
             }
         }
