@@ -38,6 +38,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static javax.xml.stream.XMLStreamConstants.*;
 
 /**
@@ -108,6 +110,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      */
     @SuppressWarnings({"Since15"})
     @IgnoreJRERequirement
+    @SuppressFBWarnings
     public void acceptRemoteSubmission(final Reader in) throws IOException {
         final long[] duration = new long[1];
         execute(new RunExecution() {
@@ -122,8 +125,9 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 }
             }
 
+            @SuppressFBWarnings
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()), false, "UTF-8");
+                PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()));
 
                 XMLInputFactory xif = XMLInputFactory.newInstance();
                 XMLStreamReader p = xif.createXMLStreamReader(in);
@@ -140,10 +144,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                     }
                     p.nextTag(); // get to <result>
                 } catch (Exception ex) {
-                    logger.print("An error occurred during encoding: " + ex.getMessage());
                     throw ex;
-                } finally {
-                    logger.close(); 
                 }
 
                 Result r = Integer.parseInt(elementText(p))==0?Result.SUCCESS:Result.FAILURE;
@@ -188,10 +189,11 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * @param stream    Stream of external job log
      * @throws IOException
      */
+    @SuppressFBWarnings
     public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(listener.getLogger(), false, "UTF-8");
+                PrintStream logger = new PrintStream(listener.getLogger());
                 final int sChunk = 8192;
                 GZIPInputStream zipin = new GZIPInputStream(stream);
                 byte[] buffer = new byte[sChunk];
@@ -200,11 +202,8 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                     while ((length = zipin.read(buffer, 0, sChunk)) != -1)
                         logger.write(buffer, 0, length);
                 } catch (Exception ex) {
-                    logger.print("An error occurred while reading the buffer: " + ex.getMessage());
                     throw ex;
-                } finally {
-                    logger.close(); 
-                }
+                } 
                 Result r = result==0?Result.SUCCESS:Result.FAILURE;
                 return r;
             }
@@ -228,17 +227,15 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * @param log       External job log
      * @throws IOException
      */
+    @SuppressFBWarnings
     public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
-                PrintStream logger = new PrintStream(listener.getLogger(), false, "UTF-8");
+                PrintStream logger = new PrintStream(listener.getLogger());
                 try {
                     logger.print(log);
                 } catch (Exception ex) {
-                    logger.print("An error occurred while accepting the remote submission: " + ex.getMessage());
                     throw ex;
-                } finally {
-                    logger.close(); 
                 }
                 Result r = result==0?Result.SUCCESS:Result.FAILURE;
                 return r;

@@ -61,9 +61,6 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
         });
     }
 
-    // keep track of the previous time we started a build
-    private transient long lastBuildStartTime;
-
     /**
      * Creates a new build of this project for immediate execution.
      *
@@ -73,20 +70,6 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
      */
     public synchronized ExternalRun newBuild() throws IOException {
         checkPermission(AbstractProject.BUILD);
-        // make sure we don't start two builds in the same second
-        // so the build directories will be different too
-        long timeSinceLast = System.currentTimeMillis() - lastBuildStartTime;
-        if (timeSinceLast < 1000) {
-            try {
-                while(timeSinceLast > 0){
-                    wait();
-                    timeSinceLast--;
-                    //Thread.sleep(1000 - timeSinceLast);
-                }
-            } catch (InterruptedException e) {
-            }
-        }
-        lastBuildStartTime = System.currentTimeMillis();
 
         ExternalRun run = new ExternalRun(this);
         _getRuns();
