@@ -79,9 +79,6 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
 
     /**
      * Used to check if this is an external job and ready to accept a build result.
-     * @param rsp  Job response
-     * @throws IOException
-     * @throws ServletException
      */
     public void doAcceptBuildResult(StaplerResponse rsp) throws IOException, ServletException {
         checkPermission(AbstractProject.BUILD);

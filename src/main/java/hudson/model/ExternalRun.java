@@ -98,19 +98,19 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * <p>
      * The format of the XML is:
      *
-     * <pre>&lt;xmp&gt;
-     * &lt;run&gt;
-     *  &lt;log&gt;...console output...&lt;/log&gt;
-     *  &lt;result&gt;exit code&lt;/result&gt;
-     * &lt;/run&gt;
-     * &lt;/xmp&gt;</pre>
+     * {@code <pre><xmp>
+     * <run>
+     *  <log>...console output...</log>
+     *  <result>exit code</result>
+     * </run>
+     * </xmp></pre> }
      *
      * @param in    Log file referenc
      * @throws IOException
      */
     @SuppressWarnings({"Since15"})
     @IgnoreJRERequirement
-    @SuppressFBWarnings
+    @SuppressFBWarnings(value="OS_OPEN_STREAM",justification="Logger will be handled upstream.")
     public void acceptRemoteSubmission(final Reader in) throws IOException {
         final long[] duration = new long[1];
         execute(new RunExecution() {
@@ -125,7 +125,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 }
             }
 
-            @SuppressFBWarnings
+            @SuppressFBWarnings(value="DM_DEFAULT_ENCODING",justification="Using preexisting encoding.")
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()));
 
@@ -135,17 +135,13 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 p.nextTag();    // get to the <run>
                 p.nextTag();    // get to the <log>
 
-                try {
-                    setCharset(p.getAttributeValue(null,"content-encoding"));
-                    while(p.next()!= END_ELEMENT) {
-                        int type = p.getEventType();
-                        if(type== CHARACTERS || type== CDATA)
-                            logger.print(p.getText());
-                    }
-                    p.nextTag(); // get to <result>
-                } catch (Exception ex) {
-                    throw ex;
+                setCharset(p.getAttributeValue(null,"content-encoding"));
+                while(p.next()!= END_ELEMENT) {
+                    int type = p.getEventType();
+                    if(type== CHARACTERS || type== CDATA)
+                        logger.print(p.getText());
                 }
+                p.nextTag(); // get to <result>
 
                 Result r = Integer.parseInt(elementText(p))==0?Result.SUCCESS:Result.FAILURE;
 
@@ -189,7 +185,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * @param stream    Stream of external job log
      * @throws IOException
      */
-    @SuppressFBWarnings
+    @SuppressFBWarnings(value="OS_OPEN_STREAM",justification="Logger will be handled upstream.")
     public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
@@ -198,12 +194,8 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 GZIPInputStream zipin = new GZIPInputStream(stream);
                 byte[] buffer = new byte[sChunk];
                 int length;
-                try {
-                    while ((length = zipin.read(buffer, 0, sChunk)) != -1)
-                        logger.write(buffer, 0, length);
-                } catch (Exception ex) {
-                    throw ex;
-                } 
+                while ((length = zipin.read(buffer, 0, sChunk)) != -1)
+                    logger.write(buffer, 0, length);
                 Result r = result==0?Result.SUCCESS:Result.FAILURE;
                 return r;
             }
@@ -227,16 +219,12 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * @param log       External job log
      * @throws IOException
      */
-    @SuppressFBWarnings
+    @SuppressFBWarnings(value="OS_OPEN_STREAM",justification="Logger will be handled upstream.")
     public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(listener.getLogger());
-                try {
-                    logger.print(log);
-                } catch (Exception ex) {
-                    throw ex;
-                }
+                logger.print(log);
                 Result r = result==0?Result.SUCCESS:Result.FAILURE;
                 return r;
             }
