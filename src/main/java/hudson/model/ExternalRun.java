@@ -103,14 +103,14 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      *  <log>...console output...</log>
      *  <result>exit code</result>
      * </run>
-     * </xmp></pre> }
+     * </xmp></pre>}
      *
      * @param in    Log file referenc
      * @throws IOException
      */
     @SuppressWarnings({"Since15"})
     @IgnoreJRERequirement
-    @SuppressFBWarnings(value="OS_OPEN_STREAM",justification="Logger will be handled upstream.")
+    @SuppressFBWarnings(value="OS_OPEN_STREAM", justification="Logger will be handled upstream")
     public void acceptRemoteSubmission(final Reader in) throws IOException {
         final long[] duration = new long[1];
         execute(new RunExecution() {
@@ -118,14 +118,16 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 StringBuilder buf = new StringBuilder();
                 while(true) {
                     int type = r.next();
-                    if(type== CHARACTERS || type== CDATA)
+                    if(type== CHARACTERS || type== CDATA) {
                         buf.append(r.getTextCharacters(), r.getTextStart(), r.getTextLength());
-                    else
+                    }
+                    else {
                         return buf.toString();
+                    }
                 }
             }
 
-            @SuppressFBWarnings(value="DM_DEFAULT_ENCODING",justification="Using preexisting encoding.")
+            @SuppressFBWarnings(value="DM_DEFAULT_ENCODING", justification="Using preexisting encoding")
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()));
 
@@ -138,8 +140,9 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 setCharset(p.getAttributeValue(null,"content-encoding"));
                 while(p.next()!= END_ELEMENT) {
                     int type = p.getEventType();
-                    if(type== CHARACTERS || type== CDATA)
+                    if(type== CHARACTERS || type== CDATA) {
                         logger.print(p.getText());
+                    }
                 }
                 p.nextTag(); // get to <result>
 
@@ -185,7 +188,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * @param stream    Stream of external job log
      * @throws IOException
      */
-    @SuppressFBWarnings(value="OS_OPEN_STREAM",justification="Logger will be handled upstream.")
+    @SuppressFBWarnings(value="OS_OPEN_STREAM", justification="Logger will be handled upstream")
     public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
@@ -194,8 +197,9 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 GZIPInputStream zipin = new GZIPInputStream(stream);
                 byte[] buffer = new byte[sChunk];
                 int length;
-                while ((length = zipin.read(buffer, 0, sChunk)) != -1)
+                while ((length = zipin.read(buffer, 0, sChunk)) != -1) {
                     logger.write(buffer, 0, length);
+                }
                 Result r = result==0?Result.SUCCESS:Result.FAILURE;
                 return r;
             }
@@ -219,7 +223,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * @param log       External job log
      * @throws IOException
      */
-    @SuppressFBWarnings(value="OS_OPEN_STREAM",justification="Logger will be handled upstream.")
+    @SuppressFBWarnings(value="OS_OPEN_STREAM", justification="Logger will be handled upstream")
     public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
