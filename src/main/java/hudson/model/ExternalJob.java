@@ -61,26 +61,15 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
         });
     }
 
-    // keep track of the previous time we started a build
-    private transient long lastBuildStartTime;
-
     /**
      * Creates a new build of this project for immediate execution.
      *
      * Needs to be synchronized so that two {@link #newBuild()} invocations serialize each other.
+     * @return ExternalRun   a reference to the new build
+     * @throws IOException
      */
     public synchronized ExternalRun newBuild() throws IOException {
         checkPermission(AbstractProject.BUILD);
-        // make sure we don't start two builds in the same second
-        // so the build directories will be different too
-        long timeSinceLast = System.currentTimeMillis() - lastBuildStartTime;
-        if (timeSinceLast < 1000) {
-            try {
-                Thread.sleep(1000 - timeSinceLast);
-            } catch (InterruptedException e) {
-            }
-        }
-        lastBuildStartTime = System.currentTimeMillis();
 
         ExternalRun run = new ExternalRun(this);
         _getRuns();
@@ -98,6 +87,8 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
 
     /**
      * Used to post the build result from a remote machine.
+     * @param req   Remote request
+     * @param rsp   Remote response
      */
     public void doPostBuildResult( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
         ExternalRun run = newBuild();

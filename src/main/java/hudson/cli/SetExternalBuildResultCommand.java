@@ -51,6 +51,7 @@ public class SetExternalBuildResultCommand extends CLICommand {
      *
      * @return
      *      0: success.
+     * @throws Exception
      */
     protected int run() throws Exception {
         ExternalRun run = ((ExternalJob) job).newBuild();
