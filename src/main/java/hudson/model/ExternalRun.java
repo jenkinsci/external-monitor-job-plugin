@@ -110,7 +110,6 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      */
     @SuppressWarnings({"Since15"})
     @IgnoreJRERequirement
-    @SuppressFBWarnings(value="OS_OPEN_STREAM", justification="Logger will be handled upstream")
     public void acceptRemoteSubmission(final Reader in) throws IOException {
         final long[] duration = new long[1];
         execute(new RunExecution() {
@@ -127,7 +126,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 }
             }
 
-            @SuppressFBWarnings(value="DM_DEFAULT_ENCODING", justification="Using preexisting encoding")
+            @SuppressFBWarnings(value = {"OS_OPEN_STREAM", "DM_DEFAULT_ENCODING"}, justification = "Logger will be handled upstream")
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()));
 
@@ -188,9 +187,9 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * @param stream    Stream of external job log
      * @throws IOException
      */
-    @SuppressFBWarnings(value="OS_OPEN_STREAM", justification="Logger will be handled upstream")
     public void acceptRemoteSubmission(final int result, final long duration, final InputStream stream) throws IOException {
         execute(new RunExecution() {
+            @SuppressFBWarnings(value = {"OS_OPEN_STREAM", "DM_DEFAULT_ENCODING"}, justification = "Logger will be handled upstream")
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(listener.getLogger());
                 final int sChunk = 8192;
@@ -223,9 +222,9 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
      * @param log       External job log
      * @throws IOException
      */
-    @SuppressFBWarnings(value="OS_OPEN_STREAM", justification="Logger will be handled upstream")
     public void acceptRemoteSubmission(final int result, final long duration, final String log) throws IOException {
         execute(new RunExecution() {
+            @SuppressFBWarnings(value = {"OS_OPEN_STREAM", "DM_DEFAULT_ENCODING"}, justification = "Logger will be handled upstream")
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(listener.getLogger());
                 logger.print(log);
