@@ -73,8 +73,8 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
     public void run(final String[] cmd) {
         execute(new RunExecution() {
             public Result run(BuildListener listener) throws Exception {
-                Proc proc = new Proc.LocalProc(cmd,getEnvironment(listener),System.in,new DualOutputStream(System.out,listener.getLogger()));
-                return proc.join()==0?Result.SUCCESS:Result.FAILURE;
+                Proc proc = new Proc.LocalProc(cmd, getEnvironment(listener), System.in, new DualOutputStream(System.out, listener.getLogger()));
+                return proc.join() ==0 ? Result.SUCCESS : Result.FAILURE;
             }
 
             public void post(BuildListener listener) {
@@ -115,9 +115,9 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
         execute(new RunExecution() {
             private String elementText(XMLStreamReader r) throws XMLStreamException {
                 StringBuilder buf = new StringBuilder();
-                while(true) {
+                while (true) {
                     int type = r.next();
-                    if(type== CHARACTERS || type== CDATA) {
+                    if (type == CHARACTERS || type == CDATA) {
                         buf.append(r.getTextCharacters(), r.getTextStart(), r.getTextLength());
                     }
                     else {
@@ -137,30 +137,30 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 p.nextTag();    // get to the <log>
 
                 setCharset(p.getAttributeValue(null,"content-encoding"));
-                while(p.next()!= END_ELEMENT) {
+                while (p.next() != END_ELEMENT) {
                     int type = p.getEventType();
-                    if(type== CHARACTERS || type== CDATA) {
+                    if (type == CHARACTERS || type == CDATA) {
                         logger.print(p.getText());
                     }
                 }
                 p.nextTag(); // get to <result>
 
-                Result r = Integer.parseInt(elementText(p))==0?Result.SUCCESS:Result.FAILURE;
+                Result r = Integer.parseInt(elementText(p)) == 0 ? Result.SUCCESS : Result.FAILURE;
 
                 do {
                     p.nextTag();
-                    if(p.getEventType()== START_ELEMENT){
-                        if(p.getLocalName().equals("duration")) {
+                    if (p.getEventType() == START_ELEMENT){
+                        if (p.getLocalName().equals("duration")) {
                             duration[0] = Long.parseLong(elementText(p));
                         }
-                        else if(p.getLocalName().equals("displayName")) {
+                        else if (p.getLocalName().equals("displayName")) {
                             setDisplayName(p.getElementText());
                         }
                         else if(p.getLocalName().equals("description")) {
                             setDescription(p.getElementText());
                         }
                     }
-                } while(!(p.getEventType() == END_ELEMENT && p.getLocalName().equals("run")));
+                } while (!(p.getEventType() == END_ELEMENT && p.getLocalName().equals("run")));
 
                 return r;
             }
@@ -199,7 +199,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 while ((length = zipin.read(buffer, 0, sChunk)) != -1) {
                     logger.write(buffer, 0, length);
                 }
-                Result r = result==0?Result.SUCCESS:Result.FAILURE;
+                Result r = result == 0 ? Result.SUCCESS : Result.FAILURE;
                 return r;
             }
 
@@ -228,7 +228,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
             public Result run(BuildListener listener) throws Exception {
                 PrintStream logger = new PrintStream(listener.getLogger());
                 logger.print(log);
-                Result r = result==0?Result.SUCCESS:Result.FAILURE;
+                Result r = result == 0 ? Result.SUCCESS : Result.FAILURE;
                 return r;
             }
 
