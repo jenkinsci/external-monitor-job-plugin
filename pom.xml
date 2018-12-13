@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>2.11</version>
+    <version>3.29</version>
   </parent>
 
   <artifactId>external-monitor-job</artifactId>
@@ -19,10 +19,10 @@
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
-  
+
   <properties>
-    <jenkins.version>1.609.3</jenkins.version>
-    <java.level>6</java.level>
+    <jenkins.version>2.60.3</jenkins.version>
+    <java.level>8</java.level>
   </properties>
 
   <repositories>
