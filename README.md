@@ -139,3 +139,7 @@ put an URL to the submitted build. The CLI command above returns the new
 build number. The command above can be called programatically from an
 Java application. You can find a sample for it
 [here](https://github.com/davido/gerrit-buildbot-plugin/blob/buildbot-2.5-plugin/src/main/java/org/libreoffice/ci/gerrit/buildbot/publisher/JenkinsLogPublisher.java).
+
+## Vershion history
+
+Please refer to the [changelog](CHANGELOG.md).
