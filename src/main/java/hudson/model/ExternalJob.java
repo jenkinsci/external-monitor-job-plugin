@@ -61,26 +61,15 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
         });
     }
 
-    // keep track of the previous time we started a build
-    private transient long lastBuildStartTime;
-
     /**
      * Creates a new build of this project for immediate execution.
      *
      * Needs to be synchronized so that two {@link #newBuild()} invocations serialize each other.
+     * @return ExternalRun   a reference to the new build
+     * @throws IOException
      */
     public synchronized ExternalRun newBuild() throws IOException {
         checkPermission(AbstractProject.BUILD);
-        // make sure we don't start two builds in the same second
-        // so the build directories will be different too
-        long timeSinceLast = System.currentTimeMillis() - lastBuildStartTime;
-        if (timeSinceLast < 1000) {
-            try {
-                Thread.sleep(1000 - timeSinceLast);
-            } catch (InterruptedException e) {
-            }
-        }
-        lastBuildStartTime = System.currentTimeMillis();
 
         ExternalRun run = new ExternalRun(this);
         _getRuns();
@@ -98,6 +87,8 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
 
     /**
      * Used to post the build result from a remote machine.
+     * @param req   Remote request
+     * @param rsp   Remote response
      */
     public void doPostBuildResult( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
         ExternalRun run = newBuild();
@@ -120,6 +111,39 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
     public static final class DescriptorImpl extends TopLevelItemDescriptor {
         public String getDisplayName() {
             return Messages.ExternalJob_displayName();
+        }
+
+        /**
+         * Needed if it wants External Monitor Jobs are categorized in Jenkins 2.x.
+         *
+         * TODO: Override when the baseline is upgraded to 2.x
+         *
+         * @return A string it represents a ItemCategory identifier.
+         */
+        public String getCategoryId() {
+            return "standalone-projects";
+        }
+
+        /**
+         * Needed if it wants External Monitor Jobs are categorized in Jenkins 2.x.
+         *
+         * TODO: Override when the baseline is upgraded to 2.x
+         *
+         * @return A string with the Item description.
+         */
+        public String getDescription() {
+            return Messages.ExternalJob_Description();
+        }
+
+        /**
+         * Needed if it wants External Monitor Jobs are categorized in Jenkins 2.x.
+         *
+         * TODO: Override when the baseline is upgraded to 2.x
+         *
+         * @return A string it represents a URL pattern to get the Item icon in different sizes.
+         */
+        public String getIconFilePathPattern() {
+            return "plugin/external-monitor-job/images/:size/externaljob.png";
         }
 
         public ExternalJob newInstance(ItemGroup parent, String name) {
