@@ -156,8 +156,8 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                         logger.print(p.getText());
                     }
                 }
-
                 p.nextTag(); // get to <result>
+
                 Result r = parseResult(elementText(p));
 
                 do {
