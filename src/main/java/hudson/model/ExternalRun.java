@@ -37,6 +37,7 @@ import java.io.PrintStream;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
+import java.util.Scanner;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -89,6 +90,18 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
 
     private void setCharset(String c) { // JENKINS-14107
         charset = c;
+    }
+
+    private Result parseResult(String text) {
+        Result result;
+        Scanner sc = new Scanner(text);
+        if (sc.hasNextInt()) {
+            result = sc.nextInt()==0 ? Result.SUCCESS : Result.FAILURE;
+        }
+        else {
+            result = Result.fromString(text);
+        }
+        return result;
     }
 
     /**
@@ -145,7 +158,7 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 }
                 p.nextTag(); // get to <result>
 
-                Result r = Integer.parseInt(elementText(p)) == 0 ? Result.SUCCESS : Result.FAILURE;
+                Result r = parseResult(elementText(p));
 
                 do {
                     p.nextTag();
