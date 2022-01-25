@@ -26,15 +26,15 @@ THE SOFTWARE.
   Side panel for the build view.
 -->
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:p="/lib/hudson/project">
 	<l:header title="${it.name}">
 	  <st:include page="rssHeader.jelly" />
 	</l:header>
 	<j:set var="url" value="${h.getNearestAncestorUrl(request,it)}"/>
 	<l:side-panel>
 	  <l:tasks>
-	    <l:task icon="images/24x24/up.png" href="${rootURL}/" title="${%Back to Dashboard}" />
-	    <l:task icon="images/24x24/search.png" href="." title="${%Status}" />
+	    <l:task icon="icon-up icon-md" href="${rootURL}/" title="${%Back to Dashboard}" />
+	    <l:task icon="icon-search icon-md" href="." title="${%Status}" />
         <p:configurable/>
 	    <st:include page="actions.jelly" />
 	  </l:tasks>
