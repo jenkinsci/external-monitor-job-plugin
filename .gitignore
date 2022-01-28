@@ -5,3 +5,5 @@ work
 /.classpath
 external-monitor-job.iml
 .idea
+/src/main/main.iml
+/src/test/test.iml
