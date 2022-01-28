@@ -41,7 +41,7 @@ For Windows:
 
 If your webserver extracts the `jenkins.war` file when it deploys
 Jenkins then you may use the path directly to the `WEB-INF/lib`
-directory and all other required jars will be found there. Otherwise you
+directory and all other required jars will be found there. Otherwise, you
 may extract these from the war file:
 
     jenkins-core-*.jar
@@ -95,7 +95,7 @@ project](https://wiki.jenkins.io/display/JENKINS/Building+a+software+project),
 which would also allow you to manually execute the job outside the
 scheduled executions.
 
-## Submit a run programatically
+## Submit a run programmatically
 
 The above command submits the execution and its result by sending XML to
 HTTP. This means you can submit an execution record from any program, as
@@ -108,7 +108,7 @@ The format is explained below:
       <result>... integer indicating the error code. 0 is success and everything else is failure</result>
       <duration>... milliseconds it took to execute this run ...</duration>
       <displayName>... The name to be displayed rather than the build number ...</displayName>
-      <description>... Description of the build ...</description>
+      <description>... Description of the build ...</description>
     </run>
 
 The `duration` element is optional, since 1.429 `displayName` and
@@ -136,10 +136,10 @@ command. The gzipped log file can be transported through pipe:
 
 Sometimes build number is needed, as the calling program might need to
 put an URL to the submitted build. The CLI command above returns the new
-build number. The command above can be called programatically from an
+build number. The command above can be called programmatically from a
 Java application. You can find a sample for it
 [here](https://github.com/davido/gerrit-buildbot-plugin/blob/buildbot-2.5-plugin/src/main/java/org/libreoffice/ci/gerrit/buildbot/publisher/JenkinsLogPublisher.java).
 
-## Vershion history
+## Version history
 
 Please refer to the [changelog](CHANGELOG.md).
