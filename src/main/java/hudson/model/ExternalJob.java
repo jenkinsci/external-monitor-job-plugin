@@ -34,6 +34,7 @@ import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.externalmonitorjob.Messages;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.verb.POST;
 
 /**
  * Job that runs outside Hudson whose result is submitted to Hudson
@@ -90,6 +91,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
      * @param req   Remote request
      * @param rsp   Remote response
      */
+    @POST
     public void doPostBuildResult( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
         ExternalRun run = newBuild();
         run.acceptRemoteSubmission(req.getReader());
