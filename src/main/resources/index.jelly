@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+    Adds the ability to monitor the result of externally executed jobs
+</div>
