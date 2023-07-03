@@ -48,6 +48,8 @@ import static javax.xml.stream.XMLStreamConstants.*;
  * @author Kohsuke Kawaguchi
  */
 public class ExternalRun extends Run<ExternalJob,ExternalRun> {
+
+    public static final String ENABLE_DTD_PROPERTY_NAME = ExternalRun.class + ".supportDTD";
     /**
      * Loads a run from a log file.
      * @param owner
@@ -142,8 +144,9 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                 PrintStream logger = new PrintStream(new DecodingStream(listener.getLogger()));
 
                 XMLInputFactory xif = XMLInputFactory.newInstance();
-                XMLStreamReader p = xif.createXMLStreamReader(in);
+                xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.parseBoolean(System.getProperty(ENABLE_DTD_PROPERTY_NAME)));
 
+                XMLStreamReader p = xif.createXMLStreamReader(in);
                 p.nextTag();    // get to the <run>
                 p.nextTag();    // get to the <log>
 
@@ -172,7 +175,6 @@ public class ExternalRun extends Run<ExternalJob,ExternalRun> {
                         }
                     }
                 } while (!(p.getEventType() == END_ELEMENT && p.getLocalName().equals("run")));
-
                 return r;
             }
 

