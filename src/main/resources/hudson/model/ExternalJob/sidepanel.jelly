@@ -33,8 +33,7 @@ THE SOFTWARE.
 	<j:set var="url" value="${h.getNearestAncestorUrl(request,it)}"/>
 	<l:side-panel>
 	  <l:tasks>
-	    <l:task icon="icon-up icon-md" href="${rootURL}/" title="${%Back to Dashboard}" />
-	    <l:task icon="icon-search icon-md" href="." title="${%Status}" />
+	    <l:task icon="symbol-details" href="." title="${%Status}" />
         <p:configurable/>
 	    <st:include page="actions.jelly" />
 	  </l:tasks>
