@@ -30,7 +30,6 @@ THE SOFTWARE.
   <l:header title="${it.fullDisplayName}" />
   <l:side-panel>
     <l:tasks>
-      <l:task icon="icon-up icon-md" href="${rootURL}/${it.parent.url}" title="${%Back to Job}" contextMenu="false"/>
       <l:task icon="icon-terminal icon-md" href="." title="${%Console Output}" />
       <j:if test="${(!h.isArtifactsPermissionEnabled() or h.isArtifactsPermissionEnabled() and h.hasPermission(it,attrs.permission)) and it.hasArtifacts}">
         <l:task icon="icon-package icon-md" href="artifacts-index" title="${%Artifacts}" />
