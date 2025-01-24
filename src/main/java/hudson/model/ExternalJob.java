@@ -28,12 +28,12 @@ import hudson.model.RunMap.Constructor;
 import hudson.util.AlternativeUiTextProvider;
 import java.io.File;
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.externalmonitorjob.Messages;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.POST;
 
 /**
@@ -81,7 +81,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
     /**
      * Used to check if this is an external job and ready to accept a build result.
      */
-    public void doAcceptBuildResult(StaplerResponse rsp) throws IOException, ServletException {
+    public void doAcceptBuildResult(StaplerResponse2 rsp) throws IOException, ServletException {
         checkPermission(AbstractProject.BUILD);
         rsp.setStatus(HttpServletResponse.SC_OK);
     }
@@ -92,7 +92,7 @@ public class ExternalJob extends ViewJob<ExternalJob,ExternalRun> implements Top
      * @param rsp   Remote response
      */
     @POST
-    public void doPostBuildResult( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+    public void doPostBuildResult( StaplerRequest2 req, StaplerResponse2 rsp ) throws IOException, ServletException {
         ExternalRun run = newBuild();
         run.acceptRemoteSubmission(req.getReader());
         rsp.setStatus(HttpServletResponse.SC_OK);
