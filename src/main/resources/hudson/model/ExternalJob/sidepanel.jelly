@@ -30,7 +30,7 @@ THE SOFTWARE.
 	<l:header title="${it.name}">
 	  <st:include page="rssHeader.jelly" />
 	</l:header>
-	<j:set var="url" value="${h.getNearestAncestorUrl(request,it)}"/>
+	<j:set var="url" value="${h.getNearestAncestorUrl(request2,it)}"/>
 	<l:side-panel>
 	  <l:tasks>
 	    <l:task icon="symbol-details" href="." title="${%Status}" />
