@@ -1,10 +1,10 @@
 package hudson.model;
 
 import org.htmlunit.Page;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import java.net.HttpURLConnection;
 
@@ -12,14 +12,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
-public class Security2762Test {
-
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+@WithJenkins
+class Security2762Test {
 
     @Issue("SECURITY-2762")
     @Test
-    public void doPostBuildResultWhenInvokedUsingGetMethodThenResourceNotFound() throws Exception {
+    void doPostBuildResultWhenInvokedUsingGetMethodThenResourceNotFound(JenkinsRule j) throws Exception {
         j.jenkins.createProject(ExternalJob.class, "externalJob");
         JenkinsRule.WebClient webClient = j .createWebClient().withThrowExceptionOnFailingStatusCode(false);
         Page page = webClient.goTo("job/externalJob/postBuildResult");
