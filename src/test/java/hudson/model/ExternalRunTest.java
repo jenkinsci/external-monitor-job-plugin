@@ -3,51 +3,59 @@ package hudson.model;
 import hudson.EnvVars;
 import hudson.util.StreamTaskListener;
 import jenkins.model.Jenkins;
-import org.junit.Assert;
-import org.jvnet.hudson.test.Bug;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.junit.jupiter.api.Test;
+import org.jvnet.hudson.test.Issue;
+import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
-import java.io.IOException;
 import java.io.StringReader;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-public class ExternalRunTest extends HudsonTestCase {
-    public void test1() throws Exception {
-        ExternalJob p = hudson.createProject(ExternalJob.class, "test");
+@WithJenkins
+class ExternalRunTest {
+
+    @Test
+    void test1(JenkinsRule jenkins) throws Exception {
+        ExternalJob p = jenkins.createProject(ExternalJob.class, "test");
         ExternalRun b = p.newBuild();
         b.acceptRemoteSubmission(new StringReader(
             "<run><log content-encoding='UTF-8'>AAAAAAAA</log><result>0</result><duration>100</duration></run>"
         ));
-        assertEquals(Result.SUCCESS,b.getResult());
-        assertEquals(b.getDuration(),100);
+        assertEquals(Result.SUCCESS, b.getResult());
+        assertEquals(100, b.getDuration());
 
         b = p.newBuild();
         b.acceptRemoteSubmission(new StringReader(
             "<run><log content-encoding='UTF-8'>AAAAAAAA</log><result>1</result></run>"
         ));
-        assertEquals(Result.FAILURE,b.getResult());
+        assertEquals(Result.FAILURE, b.getResult());
     }
 
-    public void testStringResult() throws Exception {
-        ExternalJob p = jenkins.createProject(ExternalJob.class, createUniqueProjectName());
+    @Test
+    void testStringResult(JenkinsRule jenkins) throws Exception {
+        ExternalJob p = jenkins.createProject(ExternalJob.class);
         ExternalRun b = p.newBuild();
         b.acceptRemoteSubmission(new StringReader(
             "<run><log/><result>SUCCESS</result></run>"
         ));
-        assertEquals(Result.SUCCESS,b.getResult());
+        assertEquals(Result.SUCCESS, b.getResult());
 
         b = p.newBuild();
         b.acceptRemoteSubmission(new StringReader(
             "<run><log/><result>ABORTED</result></run>"
         ));
-        assertEquals(Result.ABORTED,b.getResult());
+        assertEquals(Result.ABORTED, b.getResult());
     }
 
-    @Bug(11592)
-    public void testExternalJob() throws Exception {
-        ExternalJob p = jenkins.createProject(ExternalJob.class, createUniqueProjectName());
+    @Issue("JENKINS-11592")
+    @Test
+    void testExternalJob(JenkinsRule jenkins) throws Exception {
+        ExternalJob p = jenkins.createProject(ExternalJob.class);
         ExternalRun b = p.newBuild();
         b.acceptRemoteSubmission(new StringReader(
             "<run><log content-encoding='UTF-8'></log><result>0</result><duration>1</duration></run>"
@@ -57,7 +65,7 @@ public class ExternalRunTest extends HudsonTestCase {
     }
 
     @SuppressWarnings("rawtypes")
-    private void assertGetEnvironmentWorks(Run build) throws IOException, InterruptedException {
+    private static void assertGetEnvironmentWorks(Run build) throws Exception {
         whenJenkinsMasterHasNoExecutors();
         // and getEnvironment is called outside of build
         EnvVars envVars =  build.getEnvironment(StreamTaskListener.fromStdout());
@@ -65,10 +73,9 @@ public class ExternalRunTest extends HudsonTestCase {
         assertNotNull(envVars);
     }
 
-    private void whenJenkinsMasterHasNoExecutors() throws IOException {
-        Jenkins.getInstance().setNumExecutors(0);
+    private static void whenJenkinsMasterHasNoExecutors() throws Exception {
+        Jenkins.get().setNumExecutors(0);
         // force update of nodes (TODO https://github.com/jenkinsci/jenkins/pull/1596 renders this workaround unnecessary):
-        Jenkins.getInstance().setNodes(Jenkins.getInstance().getNodes());
-        // does not reliably work: Assert.assertNull(Jenkins.getInstance().toComputer());
+        Jenkins.get().setNodes(Jenkins.get().getNodes());
     }
 }
